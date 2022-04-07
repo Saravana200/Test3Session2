@@ -1,40 +1,47 @@
 #include <stdio.h>
-void input(int *num1,int *den1, int *num2,int *den2)
+struct _fraction
 {
-    printf("enter the first fraction in the order a/b\n");
-    scanf("%d%*C%d",num1,den1);
-    printf("enter the second fraction in the order a/b\n");
-    scanf("%d%*C%d",num2,den2);
+    int num,den;
+};typedef struct _fraction Fraction;
+int find_gcd(int a,int b)
+{
+    if(a==0)
+      return b;
+    find_gcd(b%a,a);
 }
-void add(int num1,int den1,int num2,int den2,int *num3,int *den3)
+Fraction input_fractions()
 {
+    Fraction f;
+    printf("enter the fraction in the order a/b\n");
+    scanf("%d%*C%d",&f.num,&f.den);
+    return f;
+}
+Fraction add_fractions(Fraction f1,Fraction f2)
+{
+    Fraction f;
     int t=1;
-    *num3=(num1*den2)+(num2*den1);
-    *den3=den1*den2;
-    int a=*den3,b=*num3;
+    f.num=(f1.num*f2.den)+(f2.num*f1.den);
+    f.den=f1.den*f2.den;
+    int a=f.den,b=f.num;
     if(a<b)
     {
         t=b;
         b=a;
         a=t;
     }
-    while(t!=0)
-    {
-        t=a%b;
-        a=b;
-        b=t;
-    }  
-    *num3=*num3/a;
-    *den3=*den3/a;
+    a=find_gcd(b,a);
+    f.num=f.num/a;
+    f.den=f.den/a;
+    return f;
 }
-void output(int num1,int den1,int num2,int den2,int num3,int den3)
+void output(Fraction f1,Fraction f2,Fraction f3)
 {
-    printf("%d %d",num3,den3);
+    printf("%d/%d",f3.num,f3.den);
 }
 int main()
 {
-    int num1,num2,den1,den2,num3,den3;
-    input(&num1,&den1,&num2,&den2);
-    add(num1,den1,num2,den2,&num3,&den3);
-    output(num1,den1,num2,den2,num3,den3);
+    Fraction f1=input_fractions();
+    Fraction f2=input_fractions();
+    Fraction f3=add_fractions(f1,f2);
+    output(f1,f2,f3);
 }
